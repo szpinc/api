@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.szpinc.api.dao.CountyDao">
+	
+	<resultMap type="org.szpinc.api.model.County" id="BaseResultMap">
+		<id column="id" property="id" javaType="INTEGER" />
+		<result property="countyId" column="county_id" />
+		<result property="countyName" column="county_name" />
+		<!-- 配置多对一映射 -->
+		<association property="city" column="city_id"
+			javaType="org.szpinc.api.model.City" select="org.szpinc.api.dao.CityDao.get" />
+		<!-- 配置一对多映射 -->
+		<collection property="towns" ofType="org.szpinc.api.model.Town"
+			column="id" select="org.szpinc.api.dao.TownDao.getByCountyId" />
+	</resultMap>
+
+	<!-- 查询开始 -->
+	<!-- 根据ID查找County -->
+	<select id="get" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT `c`.*
+		FROM `map_county` `c`
+		WHERE `c`.`id`=#{id}
+	</select>
+	<!-- 根据city id查询County -->
+	<select id="getByCityId" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT `c`.*
+		FROM `map_county` `c`
+		WHERE `c`.`city_id`=#{cityId}
+	</select>
+	<!-- 根据county id查询County -->
+	<select id="getByCountyId" parameterType="STRING" resultMap="BaseResultMap">
+		SELECT `c`.*
+		FROM `map_county` `c`
+		WHERE `c`.`county_id`=#{countyId}
+	</select>
+	<!-- 根据county name查询County -->
+	<select id="getByCountyName" parameterType="STRING" resultMap="BaseResultMap">
+		SELECT `c`.*
+		FROM `map_county` `c`
+		WHERE `c`.`county_name`=#{countyName}
+	</select>
+	<!-- 分页查询 -->
+	<select id="limit" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+		`c`.*
+		FROM `map_county` `c` LIMIT #{0},#{1}
+	</select>
+	<!-- 查询所有数量 -->
+	<select id="size" resultType="INTEGER">
+		SELECT
+		COUNT(*)
+		FROM `map_county`
+		`c`
+	</select>
+	<!-- 查询结束 -->
+
+	<insert id="add" parameterType="org.szpinc.api.model.County">
+		INSERT INTO `map_county`
+		(`county_id`,`county_name`,`city_id`) VALUES
+		(#{countyId},#{countyName},#{city.id})
+	</insert>
+
+</mapper>

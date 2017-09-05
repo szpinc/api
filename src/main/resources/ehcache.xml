@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false">
+
+
+	<!-- 磁盘缓存目录 -->
+	<diskStore path="D:\cache\ehcache" />
+
+
+	<defaultCache
+			maxElementsInMemory="1000"
+			maxElementsOnDisk="10000000"
+			eternal="false"
+			overflowToDisk="false"
+			timeToIdleSeconds="120"
+			timeToLiveSeconds="120"
+			diskExpiryThreadIntervalSeconds="120"
+			memoryStoreEvictionPolicy="LRU">
+	</defaultCache>
+
+	<!-- map接口缓存配置 -->
+	<cache name="mapCache"
+		   	maxElementsInMemory="2000"
+			maxElementsOnDisk="20000"
+			eternal="false"
+			overflowToDisk="true"
+			timeToLiveSeconds="600"
+			diskPersistent="true"/>
+
+</ehcache>

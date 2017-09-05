@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.szpinc.api.dao.VillageDao">
+	
+	<resultMap type="org.szpinc.api.model.Village" id="BaseResultMap">
+		
+		<id column="id" property="id" javaType="INTEGER"/>
+		
+		<result property="villageId" column="village_id" javaType="STRING"/>
+		
+		<result property="villageName" column="village_name" javaType="STRING"/>
+		
+		<association property="town" column="town_id" javaType="org.szpinc.api.model.Town" select="org.szpinc.api.dao.TownDao.get" />
+		
+	</resultMap>
+	<!-- 查询开始 -->
+	<!-- 根据ID查询 -->
+	<select id="get" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT `v`.*
+		FROM `map_village` `v`
+		WHERE `v`.`id`=#{id}
+	</select>
+	<!-- 根据town_id查询 -->
+	<select id="getByTownId" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT `v`.*
+		FROM `map_village` `v`
+		WHERE `v`.`town_id`=#{townId}
+	</select>
+	
+	<select id="getByVillageId" parameterType="STRING" resultMap="BaseResultMap">
+		SELECT `v`.*
+		FROM `map_village` `v`
+		WHERE `v`.`village_id`=#{villageId}
+	</select>
+	
+	<select id="getByVillageName" parameterType="STRING" resultMap="BaseResultMap">
+		SELECT `v`.*
+		FROM `map_village` `v`
+		WHERE `v`.`village_name`=#{villageName}
+	</select>
+	
+	<!-- 分页查询 -->
+	<select id="limit" resultMap="BaseResultMap" parameterType="INTEGER" >
+		SELECT `v`.*
+		FROM `map_village` `v`
+		LIMIT #{0},${1}
+	</select>
+	<!-- 查询所有记录数量 -->
+	<select id="size" resultType="INTEGER">
+		SELECT
+		COUNT(*)
+		FROM `map_village` `v`
+	</select>
+	<!-- 查询结束 -->
+	
+	<insert id="batchAdd" parameterType="java.util.List">
+		INSERT INTO `map_village` (`village_id`,`village_name`,`town_id`) VALUES 
+		<foreach collection="list" item="village" index="index" separator=",">
+			(
+			#{village.villageId},#{village.villageName},#{village.town.id}
+			)
+		</foreach>
+	</insert>
+	
+</mapper>

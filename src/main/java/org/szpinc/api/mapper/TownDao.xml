@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.szpinc.api.dao.TownDao">
+	
+	<resultMap type="org.szpinc.api.model.Town" id="BaseResultMap">
+		<id column="id" property="id" javaType="INTEGER" />
+		<result property="townId" column="town_id" javaType="STRING" />
+		<result property="townName" column="town_name" javaType="STRING" />
+		<!-- 配置多对一映射 -->
+		<association property="county" column="county_id"
+			javaType="org.szpinc.api.model.County" select="org.szpinc.api.dao.CountyDao.get" />
+
+		<collection property="villages" column="id"
+			ofType="org.szpinc.api.model.Village" select="org.szpinc.api.dao.VillageDao.getByTownId" />
+	</resultMap>
+
+	<!-- 查询开始 -->
+	<!-- 根据ID查询 -->
+	<select id="get" parameterType="INTEGER" resultMap="BaseResultMap"> 
+		SELECT `t`.*
+		FROM `map_town` `t`
+		WHERE `t`.`id`=#{id} 
+	</select>
+	<!-- 根据town_id查询 -->
+	<select id="getByTownId" parameterType="STRING" resultMap="BaseResultMap">
+		SELECT `t`.*
+		FROM `map_town` `t`
+		WHERE `t`.`town_id`=#{townId}
+	</select>
+	<!-- 根据town_name查询 -->
+	<select id="getByTownName" parameterType="STRING" resultMap="BaseResultMap">
+		SELECT `t`.*
+		FROM `map_town` `t`
+		WHERE `t`.`town_name`=#{townName}
+	</select>
+	<!-- 根据county_id查询 -->
+	<select id="getByCountyId" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT `t`.*
+		FROM `map_town` `t`
+		WHERE `t`.`county_id`=#{countyId}
+	</select>
+	<!-- 分页查询 -->
+	<select id="limit" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT `t`.*
+		FROM `map_town` `t`
+		LIMIT #{0},#{1}
+	</select>
+	<!-- 查询结束 -->
+	
+	<insert id="add" parameterType="org.szpinc.api.model.Town">
+		INSERT INTO `map_town`
+		(`town_id`,`town_name`,`county_id`) VALUES
+		(#{townId},#{townName},#{county.id})
+	</insert>
+
+	<insert id="addBatch" parameterType="java.util.List">
+
+	</insert>
+</mapper>

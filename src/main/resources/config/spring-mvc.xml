@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cotext="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+       <!-- 扫描注解包 -->
+       <cotext:component-scan base-package="org.szpinc.api.controller" use-default-filters="false">
+              <cotext:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+       </cotext:component-scan>
+       <!-- 注解驱动 -->
+       <mvc:annotation-driven/>
+
+       <!-- 配置默认视图解析器 -->
+       <bean id="viewResolvel" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+              <!-- 返回的视图模型数据需要经过jstl来处理 -->
+              <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+              <property name="contentType" value="text/html"/>
+              <property name="prefix" value="/WEB-INF/pages/"/>
+              <property name="suffix" value=".jsp"/>
+       </bean>
+
+       <bean id="stringConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+              <property name="supportedMediaTypes">
+                     <list>
+                            <value>text/plain;charset=UTF-8</value>
+                     </list>
+              </property>
+       </bean>
+
+       <bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
+
+       <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+              <property name="messageConverters">
+                     <list>
+                            <ref bean="stringConverter"/>
+                            <ref bean="jsonConverter"/>
+                     </list>
+              </property>
+       </bean>
+</beans>
